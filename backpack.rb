@@ -1,3 +1,22 @@
+class Day
+  def initialize(day)
+    @day = day
+  end
+
+  def day_name
+    @day
+  end
+
+  def weekday?
+    weekdays = %w(monday tuesday wednesday thrusday friday)
+    if weekdays.include?(day_name)
+      return true
+    else
+      return false
+    end
+  end
+end
+
 class Backpack
   def initialize(attributes)
     @attributes = attributes # a hash containing day_of_week and weather keys
@@ -9,17 +28,33 @@ class Backpack
     @items
   end
 
-  def prepare
-    # set up local variables used by rest of prepare method
-    x = @attributes[:weather]
-    day_of_week = @attributes[:day_of_week]
+  def weather
+    @attributes[:weather]
+  end
 
-    # Ensure appropriate clothing is added to backpack
-    if x == 'rainy'
+  def day
+    @attributes[:day_of_week]
+  end
+
+  def prepare
+
+    # Ensure appropriate weather clothing is added to backpack
+    weather_clothing
+
+    # Ensure gym shoes are added to backpack if it's a gym day
+    # Gotta get to the gym on Tuesdays and Thursdays.
+    gym_shoes?
+
+    # Bring a packed lunch on all weekdays
+    lunch
+  end
+
+  def weather_clothing
+    if weather == 'rainy'
       @items << 'pants'
       @items << 'shirt'
       @items << 'umbrella'
-    elsif x == 'cold'
+    elsif weather == 'cold'
       @items << 'pants'
       @items << 'shirt'
       @items << 'jacket'
@@ -27,28 +62,28 @@ class Backpack
       @items << 'pants'
       @items << 'shirt'
     end
+  end
 
-    # Ensure gym shoes are added to backpack if it's a gym day
-    # Gotta get to the gym on Tuesdays and Thursdays. Wait a sec...
-    if day_of_week == 'monday' || day_of_week == 'thursday'
-      #add gym shoes to items
+  def gym_shoes?
+    if day == 'monday' || day == 'thursday'
+      # add gym shoes to items
       @items << 'gym shoes'
     end
+  end
 
-    # Bring a packed lunch on all weekdays
-    if day_of_week != 'saturday' && day_of_week != 'sunday'
+  def lunch
+    if day != "saturday" && day != "sunday"
       @items << 'packed lunch'
-    elsif false
-      # Used to bring snacks on weekend trips, but now I just buy 'em
+    else
       @items << 'snacks'
     end
   end
 
   # Prints a summary packing list for Melinda's backpack
-  def my_func
+  def packing_list
     output = []
     output << "Melinda, here's your packing list!"
-    output << "Day: #{@attributes[:day_of_week]}, Weather: #{@attributes[:weather]}"
+    output << "Day: #{day}, Weather: #{weather}"
     output << ""
 
     @items.each do |item|
